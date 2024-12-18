@@ -36,8 +36,19 @@ const getUserId = (message) => {
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
     const message0 = message.split(" ")[0]
-    const idGruppo = ctx.chat.id
+    const message1 = message.split(" ")[1]
     const idGiocatore = getUserId(ctx.message)
+    const idGruppo = ctx.chat.id
+    let nuovoGruppo = {idUnivocoGruppo: idGruppo}
+    let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
+    if(!esistenteGruppo){
+        esistenteGruppo = {
+            idUnivocoGruppo: idGruppo,
+            nome : "NOME DI PROVA",
+            giocatori : []
+        }
+        data.gruppi.push(esistenteGruppo)
+    }
 
     switch (message0){
         case "/users":
@@ -45,7 +56,14 @@ bot.on(message("text"), async (ctx) => {
             
             break;
         case "/createUser":
-            //creare utente con id2
+            //creare utente con id2, /createUser <userId>
+            esistenteGruppo.giocatori.push({
+                idUnivocoGiocatore: message1,
+                alias : [],
+                partiteGiocate: 0,
+                punti : 0
+            })
+
             break;
         case "/addAlias":
             //aggiungiamo alias
