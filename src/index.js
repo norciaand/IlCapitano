@@ -22,150 +22,211 @@ bot.start(async (ctx) => {
     await ctx.reply(`Hello! Your chat ID is ${chatId}`)
 })
 
-const getUserId = (message) => {
-    if (message.reply_to_message) {
-      return message.reply_to_message.from.id;
-    }
-    return message.from.id;
-};
+function ottieniGiocatore(gruppo, id) {
+    return g = gruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
+}
 
+function aumentaPartiteOttieni(gruppo, id) {
+    let g = ottieniGiocatore(gruppo, id)
+    g.partiteGiocate++
+    return g
+}
 
-
-
-
-bot.on(message("text"), async (ctx) => {
-    const message = ctx.message.text
-    const message0 = message.split(" ")[0]
-    const message1 = message.split(" ")[1]
+function ottieniGruppo(ctx) {
     const idGruppo = ctx.chat.id
-    let nuovoGruppo = {idUnivocoGruppo: idGruppo}
+    let nuovoGruppo = { idUnivocoGruppo: idGruppo }
     let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
-    if(!esistenteGruppo){
+    if (!esistenteGruppo) {
         esistenteGruppo = {
             idUnivocoGruppo: idGruppo,
-            contatore : 0,
-            nome : "NOME DI PROVA",
-            giocatori : []
+            contatore: 0,
+            nome: "NOME DI PROVA",
+            giocatori: []
         }
         data.gruppi.push(esistenteGruppo)
     }
 
-    switch (message0){
-        case "/users":
-            //scrivere tutti gli utenti
-            let string = ""
-            esistenteGruppo.giocatori.forEach((item) => {
-                let alias
-                if(item.alias[0])
-                    alias = item.alias[0]
-                else
-                    alias = "alias non assegnato"
-                string += ("ID: "+ item.idUnivocoGiocatore +" ALIAS: " + alias + "\n")
-            });
+    return esistenteGruppo
+}
 
-            await ctx.reply(string)
+bot.command('partita', async (ctx) => {
+    const message = ctx.message.text
+    esistenteGruppo = ottieniGruppo(ctx)
 
-            break;
-        case "/createUser":
-            //creare utente con id2, /createUser <userId>
+    const squadre = message.split("/partita ")[1].split(" / ")
+    console.log(squadre)
+    const sx = squadre[0].split(" ")
+    const dx = squadre[1].split(" ")
 
-
-            let nuovoUtente = {
-                idUnivocoGiocatore: esistenteGruppo.contatore,
-                alias : [],
-                partiteGiocate: 0,
-                punti : 0
-            }
-
-            if(message1){
-                nuovoUtente.alias.push(message1)
-                await ctx.reply("Creato utente ID:"+esistenteGruppo.contatore + " con alias:"+message1)
-            } else {
-                await ctx.reply("Creato utente ID:"+esistenteGruppo.contatore + " senza alias")
-            }
-
-            
-
-            esistenteGruppo.giocatori.push(nuovoUtente)
-            esistenteGruppo.contatore++
-
-            
-
-            break;
-        case "/addAlias": //addAlias <userId> <alias>
-            //aggiungiamo alias
-                const x = message.split(" ")
-                const id = x[1]
-
-                console.log(x)
-
-                let g = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
-                g.alias.push(x[2])
-
-                break;
-        case "/partita":
-                const squadre = message.split("/")
-                const sx = squadre[0].split(" ")
-                const dx = squadre[1].split(" ")
-            break;
-        case "/classifica":
-            //buttare fuori la classifica
-            break;
-        case "/ovveride":
-            // /override <userId> <points>
-            const userId = split(" ")[0]
-            const punti = split(" ")[1]
-
-            let g = esistenteGruppo.giocatori.find(g => g.idUnivocoGiocatore === userId)
-            g.punti.push(parseInt(punti))
-
-
-            break;
+    if(sx.length + dx.length != 5){
+        await ctx.reply("BRO, inserisci 5 giocatori")
+    } else {
+        switch (sx.length) {
+            case 1:
+                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 4
+                dx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                });
+                break
+            case 4:
+                sx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                });
+                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 4
+                break
+            case 2:
+                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 2
+                aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti += 1
+                dx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                });
+                break
+            case 3:
+                sx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                });
+                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 2
+                aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti -= 1
+                break
+        }
+   
     }
 
-
-
-    if (message == "+1"){
-        await ctx.reply(`adesso ti aggiungo un punto`)
-        
-        const idGruppo = ctx.chat.id
-        let nuovoGruppo = {idUnivocoGruppo: idGruppo}
-        let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
-        
-        if(!esistenteGruppo){
-            esistenteGruppo = {
-                idUnivocoGruppo: idGruppo,
-                nome : "NOME DI PROVA",
-                giocatori : []
-            }
-            data.gruppi.push(esistenteGruppo)
-        }
-
-        const idGiocatore = getUserId(ctx.message)
-        let nuovoGiocatore = {idUnivocoGiocatore: idGiocatore}
-        let esistenteGiocatore = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore === nuovoGiocatore.idUnivocoGiocatore)
-        
-        if (!esistenteGiocatore)
-        {
-            esistenteGiocatore = {
-                idUnivocoGiocatore: idGiocatore,
-                alias: [],
-                punti: 1,
-                partiteGiocate: 1
-            }
-            esistenteGruppo.giocatori.push(esistenteGiocatore)
-        }
-        else {
-            esistenteGiocatore.punti++
-            esistenteGiocatore.partiteGiocate++
-        }
-        
-
-
-    }
-
-    
 })
+
+bot.command('undo', async (ctx) => {
+    const message = ctx.message.text
+    esistenteGruppo = ottieniGruppo(ctx)
+
+    const squadre = message.split("/undo ")[1].split(" / ")
+    console.log(squadre)
+    const sx = squadre[0].split(" ")
+    const dx = squadre[1].split(" ")
+
+    if(sx.length + dx.length != 5){
+        await ctx.reply("BRO, inserisci 5 giocatori")
+    } else {
+        switch (sx.length) {
+            case 1:
+                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 4
+                dx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                });
+                break
+            case 4:
+                sx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                });
+                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 4
+                break
+            case 2:
+                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 2
+                aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti -= 1
+                dx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                });
+                break
+            case 3:
+                sx.forEach(element => {
+                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                });
+                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 2
+                aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti += 1
+                break
+        }
+    }
+
+
+})
+
+bot.command('users', async (ctx) => {
+    esistenteGruppo = ottieniGruppo(ctx)
+
+    let string = ""
+    esistenteGruppo.giocatori.forEach((item) => {
+        let alias
+        if (item.alias[0])
+            alias = item.alias[0]
+        else
+            alias = "non assegnato"
+        string += ("ID: " + item.idUnivocoGiocatore + " ALIAS: " + alias + " PUNTI: " + item.punti + "\n")
+    });
+
+    await ctx.reply(string)
+})
+
+bot.command('createUser', async (ctx) => {
+    esistenteGruppo = ottieniGruppo(ctx)
+    const message = ctx.message.text
+
+    let nuovoUtente = {
+        idUnivocoGiocatore: esistenteGruppo.contatore,
+        alias: [],
+        partiteGiocate: 0,
+        punti: 0
+    }
+
+    if (message.split(" ")[1]) {
+        nuovoUtente.alias.push(message.split(" ")[1])
+        await ctx.reply("Creato utente ID:" + esistenteGruppo.contatore + " con alias:" + message.split(" ")[1])
+    } else {
+        await ctx.reply("Creato utente ID:" + esistenteGruppo.contatore + " senza alias")
+    }
+
+    esistenteGruppo.giocatori.push(nuovoUtente)
+    esistenteGruppo.contatore++
+})
+
+bot.command('addAlias', async (ctx) => {
+    const message = ctx.message.text
+    esistenteGruppo = ottieniGruppo(ctx)
+    const x = message.split(" ")
+    const id = x[1]
+
+    console.log(x)
+
+    let g = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
+    g.alias.push(x[2])
+
+})
+
+bot.command('override', async (ctx) => {
+    const message = ctx.message.text
+    esistenteGruppo = ottieniGruppo(ctx)
+    const userId = message.split(" ")[1]
+    const punti = message.split(" ")[2]
+
+    ottieniGiocatore(ottieniGruppo(ctx),userId).punti = parseInt(punti)
+})
+
+bot.command('clear', async (ctx) => {
+    esistenteGruppo = ottieniGruppo(ctx)
+    esistenteGruppo.giocatori = []
+    esistenteGruppo.contatore = 0
+}) 
+
+bot.command('classifica', async (ctx) => {
+    esistenteGruppo = ottieniGruppo(ctx)
+
+    let string = ""
+    let array = []
+    esistenteGruppo.giocatori.forEach((item) => {
+        array.push(item)
+    });
+
+    array.sort((a,b) => b.punti - a.punti)
+    for (i = 0; i < array.length; i++){
+        let alias
+        if (array[i].alias[0])
+            alias = array[i].alias[0]
+        else
+            alias = "alias non assegnato"
+
+        string += i+1 + "°) " + alias + " (id: " + array[i].idUnivocoGiocatore+ ") con " + array[i].punti+" PUNTI\n"
+    }
+    await ctx.reply(string)
+})
+
 
 
 /* ===================== LAUNCH ===================== */
