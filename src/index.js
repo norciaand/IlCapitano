@@ -37,13 +37,13 @@ bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
     const message0 = message.split(" ")[0]
     const message1 = message.split(" ")[1]
-    const idGiocatore = getUserId(ctx.message)
     const idGruppo = ctx.chat.id
     let nuovoGruppo = {idUnivocoGruppo: idGruppo}
     let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
     if(!esistenteGruppo){
         esistenteGruppo = {
             idUnivocoGruppo: idGruppo,
+            contatore : 0,
             nome : "NOME DI PROVA",
             giocatori : []
         }
@@ -55,7 +55,12 @@ bot.on(message("text"), async (ctx) => {
             //scrivere tutti gli utenti
             let string = ""
             esistenteGruppo.giocatori.forEach((item) => {
-                string += (item+"\n")
+                let alias
+                if(item.alias[0])
+                    alias = item.alias[0]
+                else
+                    alias = "alias non assegnato"
+                string += ("ID: "+ item.idUnivocoGiocatore +" ALIAS: " + alias + "\n")
             });
 
             await ctx.reply(string)
@@ -63,26 +68,45 @@ bot.on(message("text"), async (ctx) => {
             break;
         case "/createUser":
             //creare utente con id2, /createUser <userId>
-            esistenteGruppo.giocatori.push({
-                idUnivocoGiocatore: message1,
+
+
+            let nuovoUtente = {
+                idUnivocoGiocatore: esistenteGruppo.contatore,
                 alias : [],
                 partiteGiocate: 0,
                 punti : 0
-            })
+            }
+
+            if(message1){
+                nuovoUtente.alias.push(message1)
+                await ctx.reply("Creato utente ID:"+esistenteGruppo.contatore + " con alias:"+message1)
+            } else {
+                await ctx.reply("Creato utente ID:"+esistenteGruppo.contatore + " senza alias")
+            }
+
+            
+
+            esistenteGruppo.giocatori.push(nuovoUtente)
+            esistenteGruppo.contatore++
+
+            
 
             break;
         case "/addAlias": //addAlias <userId> <alias>
             //aggiungiamo alias
                 const x = message.split(" ")
                 const id = x[1]
-                const alias = x[2]
-                
 
+                console.log(x)
 
-
+                let g = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
+                g.alias.push(x[2])
 
                 break;
         case "/partita":
+                const squadre = message.split("/")
+                const sx = squadre[0].split(" ")
+                const dx = squadre[1].split(" ")
             break;
         case "/classifica":
             //buttare fuori la classifica
@@ -128,12 +152,11 @@ bot.on(message("text"), async (ctx) => {
         
 
 
-    } else {
-        await ctx.reply(`Hai detto: ${message},${getUserId(ctx.message)}`)
     }
 
     
 })
+
 
 /* ===================== LAUNCH ===================== */
 
