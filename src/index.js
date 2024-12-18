@@ -81,6 +81,16 @@ bot.on(message("text"), async (ctx) => {
         case "/classifica":
             //buttare fuori la classifica
             break;
+        case "/ovveride":
+            // /override <userId> <points>
+            const userId = split(" ")[0]
+            const punti = split(" ")[1]
+
+            let g = esistenteGruppo.giocatori.find(g => g.idUnivocoGiocatore === userId)
+            g.punti.push(parseInt(punti))
+
+
+            break;
     }
 
 
