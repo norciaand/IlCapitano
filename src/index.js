@@ -22,6 +22,12 @@ bot.start(async (ctx) => {
     await ctx.reply(`Hello! Your chat ID is ${chatId}`)
 })
 
+const getUserId = (message) => {
+    if (message.reply_to_message) {
+      return message.reply_to_message.from.id;
+    }
+    return message.from.id;
+  };
 
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
@@ -49,7 +55,7 @@ bot.on(message("text"), async (ctx) => {
 
 
     } else {
-        await ctx.reply(`Hai detto: ${message}`)
+        await ctx.reply(`Hai detto: ${message},${getUserId(ctx.message)}`)
     }
 
     
