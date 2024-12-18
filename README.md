@@ -62,3 +62,9 @@ To set up and run the bot, follow these steps:
 - [OpenAI API Documentation](https://platform.openai.com/docs/overview)
 - [Telegraf package](https://www.npmjs.com/package/telegraf)
 - [Telegraf entities references](https://telegraf.js.org/)
+
+
+### cose che vogliamo fare
+- classifica che genera un'immmagine
+- audio e text per dare input
+- tutte le funzioni che ci sono gia

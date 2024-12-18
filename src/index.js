@@ -41,7 +41,8 @@ function ottieniGruppo(ctx) {
             idUnivocoGruppo: idGruppo,
             contatore: 0,
             nome: "NOME DI PROVA",
-            giocatori: []
+            giocatori: [],
+            elencoPartite: []
         }
         data.gruppi.push(esistenteGruppo)
     }
@@ -53,89 +54,109 @@ bot.command('partita', async (ctx) => {
     const message = ctx.message.text
     esistenteGruppo = ottieniGruppo(ctx)
 
-    const squadre = message.split("/partita ")[1].split(" / ")
-    console.log(squadre)
-    const sx = squadre[0].split(" ")
-    const dx = squadre[1].split(" ")
+    const contMess = message.split(" ")[1]
+    if (contMess) {
+        const squadre = message.split("/partita ")[1].split(" / ")
+        console.log(squadre)
+        const sx = squadre[0].split(" ")
+        const dx = squadre[1].split(" ")
 
-    if(sx.length + dx.length != 5){
-        await ctx.reply("BRO, inserisci 5 giocatori")
-    } else {
-        switch (sx.length) {
-            case 1:
-                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 4
-                dx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
-                });
-                break
-            case 4:
-                sx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
-                });
-                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 4
-                break
-            case 2:
-                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 2
-                aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti += 1
-                dx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
-                });
-                break
-            case 3:
-                sx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
-                });
-                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 2
-                aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti -= 1
-                break
+        if (sx.length + dx.length != 5) {
+            await ctx.reply("BRO, inserisci 5 giocatori")
+        } else {
+            esistenteGruppo.elencoPartite.push(message.split("/partita ")[1])
+            switch (sx.length) {
+                case 1:
+                    aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 4
+                    dx.forEach(element => {
+                        aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                    });
+                    break
+                case 4:
+                    sx.forEach(element => {
+                        aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                    });
+                    aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 4
+                    break
+                case 2:
+                    aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti += 2
+                    aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti += 1
+                    dx.forEach(element => {
+                        aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                    });
+                    break
+                case 3:
+                    sx.forEach(element => {
+                        aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                    });
+                    aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti -= 2
+                    aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti -= 1
+                    break
+            }
+
         }
-   
-    }
+    } else await ctx.reply("ERRORE")
 
 })
 
 bot.command('undo', async (ctx) => {
     const message = ctx.message.text
     esistenteGruppo = ottieniGruppo(ctx)
+    const contMess = message.split(" ")[1]
+    if (contMess) {
+        const squadre = message.split("/undo ")[1].split(" / ")
+        console.log(squadre)
+        const sx = squadre[0].split(" ")
+        const dx = squadre[1].split(" ")
 
-    const squadre = message.split("/undo ")[1].split(" / ")
-    console.log(squadre)
-    const sx = squadre[0].split(" ")
-    const dx = squadre[1].split(" ")
+        if (sx.length + dx.length != 5) {
+            await ctx.reply("BRO, inserisci 5 giocatori")
+        } else {
 
-    if(sx.length + dx.length != 5){
-        await ctx.reply("BRO, inserisci 5 giocatori")
-    } else {
-        switch (sx.length) {
-            case 1:
-                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 4
-                dx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
-                });
-                break
-            case 4:
-                sx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
-                });
-                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 4
-                break
-            case 2:
-                aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 2
-                aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti -= 1
-                dx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
-                });
-                break
-            case 3:
-                sx.forEach(element => {
-                    aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
-                });
-                aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 2
-                aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti += 1
-                break
+            let elementoRicercato = esistenteGruppo.elencoPartite.find(oggetto => oggetto == message.split("/undo ")[1]);
+
+            if (elementoRicercato) {
+
+                let index = esistenteGruppo.elencoPartite.findIndex(elemento => elemento == elementoRicercato);
+
+                if (index !== -1) {
+                    esistenteGruppo.elencoPartite.splice(index, 1);
+                }
+
+                switch (sx.length) {
+                    case 1:
+                        aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 4
+                        dx.forEach(element => {
+                            aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                        });
+                        break
+                    case 4:
+                        sx.forEach(element => {
+                            aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                        });
+                        aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 4
+                        break
+                    case 2:
+                        aumentaPartiteOttieni(esistenteGruppo, sx[0]).punti -= 2
+                        aumentaPartiteOttieni(esistenteGruppo, sx[1]).punti -= 1
+                        dx.forEach(element => {
+                            aumentaPartiteOttieni(esistenteGruppo, element).punti += 1
+                        });
+                        break
+                    case 3:
+                        sx.forEach(element => {
+                            aumentaPartiteOttieni(esistenteGruppo, element).punti -= 1
+                        });
+                        aumentaPartiteOttieni(esistenteGruppo, dx[0]).punti += 2
+                        aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti += 1
+                        break
+                }
+            } else {
+                await ctx.reply("BRO, non puoi annullare una partita non giocata")
+            }
+
         }
-    }
-
+    }else await ctx.reply("ERRORE")
 
 })
 
@@ -152,7 +173,10 @@ bot.command('users', async (ctx) => {
         string += ("ID: " + item.idUnivocoGiocatore + " ALIAS: " + alias + " PUNTI: " + item.punti + "\n")
     });
 
-    await ctx.reply(string)
+    if(string)
+        await ctx.reply(string)
+    else
+        await ctx.reply("ERRORE: non ci sono utenti")
 })
 
 bot.command('createUser', async (ctx) => {
@@ -183,10 +207,13 @@ bot.command('addAlias', async (ctx) => {
     const x = message.split(" ")
     const id = x[1]
 
-    console.log(x)
-
-    let g = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
-    g.alias.push(x[2])
+    let g = ottieniGiocatore(esistenteGruppo,id)
+    if(g){
+        g.alias.push(x[2])
+    } else {
+        await ctx.reply("ERRORE")
+    }
+    
 
 })
 
@@ -196,13 +223,18 @@ bot.command('override', async (ctx) => {
     const userId = message.split(" ")[1]
     const punti = message.split(" ")[2]
 
-    ottieniGiocatore(ottieniGruppo(ctx),userId).punti = parseInt(punti)
+    let g = ottieniGiocatore(ottieniGruppo(ctx),userId)
+    if(g) g.punti = parseInt(punti)
+    else await ctx.reply("ERRORE")
+    
 })
 
 bot.command('clear', async (ctx) => {
     esistenteGruppo = ottieniGruppo(ctx)
     esistenteGruppo.giocatori = []
     esistenteGruppo.contatore = 0
+    esistenteGruppo.elencoPartite = []
+    await ctx.reply("elenco giocatori RESETTATO")
 }) 
 
 bot.command('classifica', async (ctx) => {
@@ -224,9 +256,25 @@ bot.command('classifica', async (ctx) => {
 
         string += i+1 + "°) " + alias + " (id: " + array[i].idUnivocoGiocatore+ ") con " + array[i].punti+" PUNTI\n"
     }
-    await ctx.reply(string)
+    if (string)
+        await ctx.reply(string)
+    else 
+    await ctx.reply("ERRORE: non ci sono utenti")
 })
 
+bot.command('list', async (ctx) =>{
+    await ctx.reply(`ELENCO COMANDI:\n        
+/users    Mostra gli utenti
+/createUser    Crea utente senza alias (id progressivo)
+/createUser <alias>    Crea utente con alias (id progressivo)
+/addAlias <id> <alias>    Aggiunge alias a un utente con un certo id
+/partita <id> <id> / <id> <id> <id>    Aggiunge e toglie i punti
+/classifica    Mostra la classifica
+/override <id> <valorePunti>    Riscrive i punti di un giocatore
+/undo <id> <id> / <id> <id> <id>    Annulla una partita (solo partite effettuate)
+/clear    Cancella tutti gli utenti e partite
+`)
+})
 
 
 /* ===================== LAUNCH ===================== */
