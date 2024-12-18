@@ -29,8 +29,35 @@ const getUserId = (message) => {
     return message.from.id;
 };
 
+
+
+
+
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
+    const message0 = message.split(" ")[0]
+    const idGruppo = ctx.chat.id
+    const idGiocatore = getUserId(ctx.message)
+
+    switch (message0){
+        case "/users":
+            //scrivere tutti gli utenti
+            
+            break;
+        case "/createUser":
+            //creare utente con id2
+            break;
+        case "/addAlias":
+            //aggiungiamo alias
+            break;
+        case "/partita":
+            break;
+        case "/classifica":
+            //buttare fuori la classifica
+            break;
+    }
+
+
 
     if (message == "+1"){
         await ctx.reply(`adesso ti aggiungo un punto`)
@@ -56,7 +83,7 @@ bot.on(message("text"), async (ctx) => {
         {
             esistenteGiocatore = {
                 idUnivocoGiocatore: idGiocatore,
-                nome: "NOME GIOCATORE DI PROVA",
+                alias: [],
                 punti: 1,
                 partiteGiocate: 1
             }
