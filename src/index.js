@@ -22,9 +22,37 @@ bot.start(async (ctx) => {
     await ctx.reply(`Hello! Your chat ID is ${chatId}`)
 })
 
+
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
-    await ctx.reply(`Hai detto: ${message}`)
+
+    if (message == "+1"){
+        await ctx.reply(`adesso ti aggiungo un punto`)
+        
+        const idGruppo = ctx.chat.id
+        let nuovoGruppo = {idUnivocoGruppo: idGruppo}
+        let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
+        
+        if(!esistenteGruppo){
+            esistenteGruppo = {
+                idUnivocoGruppo: idGruppo,
+                nome : "NOME DI PROVA",
+                giocatori : []
+            }
+
+            data.gruppi.push(esistenteGruppo)
+        } else {
+            esistenteGruppo.nome = "NOME CAMBIATO"
+            
+        }
+
+
+
+    } else {
+        await ctx.reply(`Hai detto: ${message}`)
+    }
+
+    
 })
 
 /* ===================== LAUNCH ===================== */
