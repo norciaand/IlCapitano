@@ -27,7 +27,7 @@ const getUserId = (message) => {
       return message.reply_to_message.from.id;
     }
     return message.from.id;
-  };
+};
 
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
@@ -45,13 +45,28 @@ bot.on(message("text"), async (ctx) => {
                 nome : "NOME DI PROVA",
                 giocatori : []
             }
-
             data.gruppi.push(esistenteGruppo)
-        } else {
-            esistenteGruppo.nome = "NOME CAMBIATO"
-            
         }
 
+        const idGiocatore = getUserId(ctx.message)
+        let nuovoGiocatore = {idUnivocoGiocatore: idGiocatore}
+        let esistenteGiocatore = esistenteGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore === nuovoGiocatore.idUnivocoGiocatore)
+        
+        if (!esistenteGiocatore)
+        {
+            esistenteGiocatore = {
+                idUnivocoGiocatore: idGiocatore,
+                nome: "NOME GIOCATORE DI PROVA",
+                punti: 1,
+                partiteGiocate: 1
+            }
+            esistenteGruppo.giocatori.push(esistenteGiocatore)
+        }
+        else {
+            esistenteGiocatore.punti++
+            esistenteGiocatore.partiteGiocate++
+        }
+        
 
 
     } else {
