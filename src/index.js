@@ -53,7 +53,7 @@ bot.on(message("text"), async (ctx) => {
     switch (message0){
         case "/users":
             //scrivere tutti gli utenti
-            
+
             break;
         case "/createUser":
             //creare utente con id2, /createUser <userId>
@@ -65,9 +65,17 @@ bot.on(message("text"), async (ctx) => {
             })
 
             break;
-        case "/addAlias":
+        case "/addAlias": //addAlias <userId> <alias>
             //aggiungiamo alias
-            break;
+                const x = message.split(" ")
+                const id = x[1]
+                const alias = x[2]
+                
+
+
+
+
+                break;
         case "/partita":
             break;
         case "/classifica":

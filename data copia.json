@@ -1,28 +1,22 @@
 {
     "nome": "IlCapitano",
     "autori": [
-        "Andrea Norcia",
-        "Andrea Melchionna",
-        "Imraj Singh"
+      "Andrea Norcia",
+      "Andrea Melchionna",
+      "Imraj Singh"
     ],
     "gruppi": [
-        {
-            "idUnivocoGruppo": "ID",
-            "nome": "NOMEGRUPPO",
-            "giocatori": [
-                {
-                    "idUnivocoGiocatore" : "IDg",
-                    "punti": "0",
-                    "partiteGiocate": "0",
-                    "alias": "ALIAS"
-                },
-                {
-                    "idUnivocoGiocatore" : "IDg",
-                    "punti": "0",
-                    "partiteGiocate": "0",
-                    "alias": "ALIAS"
-                }
-            ]
-        }
+      {
+        "idUnivocoGruppo": 543643501,
+        "nome": "NOME CAMBIATO",
+        "giocatori": [
+        ]
+      },
+      {
+        "idUnivocoGruppo": -4793395432,
+        "nome": "NOME DI PROVA",
+        "giocatori": [
+        ]
+      }
     ]
-}
+  }
