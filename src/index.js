@@ -53,6 +53,12 @@ bot.on(message("text"), async (ctx) => {
     switch (message0){
         case "/users":
             //scrivere tutti gli utenti
+            let string = ""
+            esistenteGruppo.giocatori.forEach((item) => {
+                string += (item+"\n")
+            });
+
+            await ctx.reply(string)
 
             break;
         case "/createUser":
