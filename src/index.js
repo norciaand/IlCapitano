@@ -24,7 +24,7 @@ bot.start(async (ctx) => {
 
 bot.on(message("text"), async (ctx) => {
     const message = ctx.message.text
-    await ctx.reply(`You said: ${message}`)
+    await ctx.reply(`Hai detto: ${message}`)
 })
 
 /* ===================== LAUNCH ===================== */
