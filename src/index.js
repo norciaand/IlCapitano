@@ -50,8 +50,15 @@ bot.on(message("text"), async (ctx) => {
             break;
         case "/addAlias": //addAlias <userId> <alias>
             //aggiungiamo alias
-                const x = message.split
-            break;
+                const x = message.split(" ")
+                const id = x[1]
+                const alias = x[2]
+                
+
+
+
+
+                break;
         case "/partita":
             break;
         case "/classifica":

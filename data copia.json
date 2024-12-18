@@ -10,36 +10,12 @@
         "idUnivocoGruppo": 543643501,
         "nome": "NOME CAMBIATO",
         "giocatori": [
-          {
-            "idUnivocoGiocatore": 543643501,
-            "nome": "NOME GIOCATORE DI PROVA",
-            "punti": 3,
-            "partiteGiocate": 3
-          }
         ]
       },
       {
         "idUnivocoGruppo": -4793395432,
         "nome": "NOME DI PROVA",
         "giocatori": [
-          {
-            "idUnivocoGiocatore": 722498216,
-            "nome": "NOME GIOCATORE DI PROVA",
-            "punti": 3,
-            "partiteGiocate": "1"
-          },
-          {
-            "idUnivocoGiocatore": 543643501,
-            "nome": "NOME GIOCATORE DI PROVA",
-            "punti": 4,
-            "partiteGiocate": 2
-          },
-          {
-            "idUnivocoGiocatore": 6731221609,
-            "nome": "NOME GIOCATORE DI PROVA",
-            "punti": 2,
-            "partiteGiocate": "1"
-          }
         ]
       }
     ]
