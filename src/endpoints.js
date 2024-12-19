@@ -267,9 +267,6 @@ function addAlias(idGruppo,idGiocatore,alias){
     }
 }
 
-async function audioclassifica(ctx){
-    
-}
 
 module.exports = {
     createUser,
@@ -282,5 +279,4 @@ module.exports = {
     addAlias,
     ottieniGruppo,
     creaGruppo,
-    audioclassifica
 }
