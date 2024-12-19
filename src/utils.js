@@ -34,7 +34,8 @@ const completionWithFunctions = async (options) => {
         openai,
         messages,
         model = "gpt-3.5-turbo",
-        prompt
+        prompt,
+        functions
     } = options
 
     const tools = functions.map(({ definition }) => ({
@@ -71,7 +72,7 @@ const completionWithFunctions = async (options) => {
                 throw new Error(`Function ${functionName} not found`)
             }
 
-            const functionHandler = targetFunction.handler
+            const functionHandler = await targetFunction.handler
             const result = functionHandler(functionArguments)
 
             // Add the result to the list of messages
@@ -81,15 +82,22 @@ const completionWithFunctions = async (options) => {
                 content: JSON.stringify(result)
             })
         }
+
+        const secondCompletion = await openai.chat.completions.create({
+            model,
+            messages,
+        })
+
+        const secondMessage = secondCompletion.choices[0].message
+
+        // Add the message to the list of messages
+        messages.push(secondMessage)
+
+        return secondMessage.content
+    } else {
+        // The assistant has not requested any tool calls
+        return firstMessage.content
     }
-
-    const secondCompletion = await openai.chat.completions.create({
-        model,
-        messages,
-        tools
-    })
-
-    return secondCompletion.choices[0].message.content
 }
 
 // Put here other utility functions that can be used in the whole project

@@ -1,14 +1,15 @@
 const OpenAI = require("openai")
 const { Telegraf } = require("telegraf")
 const { message } = require("telegraf/filters")
-
+const { completionWithFunctions } = require("./utils")
+const { functions } = require("./functions")
 const configs = require("./configs")
 const utils = require("./utils")
 
 /* ===================== SETUP ===================== */
 
 const data = utils.loadData()
-setInterval(() => utils.saveData(data), 5000)
+//setInterval(() => utils.saveData(data), 5000)
 
 const bot = new Telegraf(configs.TELEGRAM_BOT_TOKEN)
 const openai = new OpenAI({
@@ -16,6 +17,14 @@ const openai = new OpenAI({
 })
 
 /* ===================== BOT ===================== */
+let botName = ""
+bot.telegram.getMe()
+    .then((botInfo) => {
+        botName = botInfo.username;
+    })
+    .catch((err) => {
+        console.error('Errore durante il recupero delle informazioni del bot:', err);
+    });
 
 bot.start(async (ctx) => {
     const chatId = ctx.chat.id
@@ -205,6 +214,8 @@ bot.command('createUser', async (ctx) => {
 
     esistenteGruppo.giocatori.push(nuovoUtente)
     esistenteGruppo.contatore++
+
+    utils.saveData(data)
 })
 
 bot.command('addAlias', async (ctx) => {
@@ -274,27 +285,32 @@ bot.command('classifica', async (ctx) => {
             default:
                 break;
         }
-        string += `*${posizione} \\|* _${alias}_, ${array[i].punti}pt, id: ${array[i].idUnivocoGiocatore}\n`
+        string += `<b>${posizione} \|</b> <i>${alias}</i>, ${array[i].punti}pt, id: ${array[i].idUnivocoGiocatore}\n`
     }
     if (string)
-        await ctx.reply(string, {parse_mode: "MarkdownV2"})
+        await ctx.reply(string, {parse_mode: "HTML"})
     else 
     await ctx.reply("ERRORE: non ci sono utenti")
 })
 
-bot.command('list', async (ctx) =>{
-    await ctx.reply(`ELENCO COMANDI:\n        
-*/users*  \\-  _Mostra gli utenti_
-*/createUser*  \\-  _Crea utente senza alias e id progressivo_
-*/createUser \\\<alias\\>*  \\-  _Crea utente con alias id progressivo_
-*/addAlias \\<id\\> \\<alias\\>*  \\-  _Aggiunge alias a un utente con un certo id_
-*/partita \\<id\\> \\<id\\> / \\<id\\> \\<id\\> \\<id\\>*  \\-  _Imposta i punti dopo una partita_
-*/classifica*  \\-  _Mostra la classifica_
-*/override \\<id\\> \\<valorePunti\\>*  \\-  _Sovrascrive punti_
-*/undo \\<id\\> \\<id\\> / \\<id\\> \\<id\\> \\<id\\>*  \\-  _Annulla una partita_
-*/clear*  \\-  _Cancella tutti gli utenti e partite_
-`, {parse_mode: "MarkdownV2"})
-})
+bot.on('text', async (ctx) => {
+
+    if (ctx.message.text.startsWith('@'+botName)) {
+
+        const res = await completionWithFunctions({
+            openai,
+            functions,
+            messages: [{ role: "system", content: "id gruppo:" + ctx.chat.id }],
+            prompt: ctx.message.text.split('@'+botName)[1] 
+        })
+
+        await ctx.reply(res)
+
+    }
+});
+  
+
+bot.on()
 
 
 /* ===================== LAUNCH ===================== */
