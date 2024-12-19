@@ -23,7 +23,7 @@ bot.start(async (ctx) => {
 })
 
 function ottieniGiocatore(gruppo, id) {
-    return g = gruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
+    return gruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == id)
 }
 
 function aumentaPartiteOttieni(gruppo, id) {
@@ -34,19 +34,23 @@ function aumentaPartiteOttieni(gruppo, id) {
 
 function ottieniGruppo(ctx) {
     const idGruppo = ctx.chat.id
-    let nuovoGruppo = { idUnivocoGruppo: idGruppo }
-    let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === nuovoGruppo.idUnivocoGruppo)
+    let esistenteGruppo = data.gruppi.find(oggetto => oggetto.idUnivocoGruppo === idGruppo)
+
+    let nome = "non_definito"
+    if (ctx.chat.type == "private") nome = ctx.chat.first_name
+    else if (ctx.chat.type == "group" || ctx.chat.type == "supergroup") nome = ctx.chat.title
+    else if (ctx.chat.type == "channel") nome = ctx.chat.type
+
     if (!esistenteGruppo) {
         esistenteGruppo = {
             idUnivocoGruppo: idGruppo,
             contatore: 0,
-            nome: "NOME DI PROVA",
+            nome: nome,
             giocatori: [],
             elencoPartite: []
         }
         data.gruppi.push(esistenteGruppo)
     }
-
     return esistenteGruppo
 }
 
@@ -62,7 +66,7 @@ bot.command('partita', async (ctx) => {
         const dx = squadre[1].split(" ")
 
         if (sx.length + dx.length != 5) {
-            await ctx.reply("BRO, inserisci 5 giocatori")
+            await ctx.reply("bro, inserisci 5 giocatori")
         } else {
             esistenteGruppo.elencoPartite.push(message.split("/partita ")[1])
             switch (sx.length) {
@@ -93,6 +97,7 @@ bot.command('partita', async (ctx) => {
                     aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti -= 1
                     break
             }
+            await ctx.reply("Partita registrata con successo!")
 
         }
     } else await ctx.reply("ERRORE")
@@ -110,7 +115,7 @@ bot.command('undo', async (ctx) => {
         const dx = squadre[1].split(" ")
 
         if (sx.length + dx.length != 5) {
-            await ctx.reply("BRO, inserisci 5 giocatori")
+            await ctx.reply("bro, devi inserire 5 giocatori")
         } else {
 
             let elementoRicercato = esistenteGruppo.elencoPartite.find(oggetto => oggetto == message.split("/undo ")[1]);
@@ -151,8 +156,9 @@ bot.command('undo', async (ctx) => {
                         aumentaPartiteOttieni(esistenteGruppo, dx[1]).punti += 1
                         break
                 }
+                await ctx.reply("Partita annullata con successo!")
             } else {
-                await ctx.reply("BRO, non puoi annullare una partita non giocata")
+                await ctx.reply("bro, non puoi annullare una partita non giocata")
             }
 
         }
@@ -254,26 +260,40 @@ bot.command('classifica', async (ctx) => {
         else
             alias = "alias non assegnato"
 
-        string += i+1 + "°) " + alias + " (id: " + array[i].idUnivocoGiocatore+ ") con " + array[i].punti+" PUNTI\n"
+        let posizione = i+1
+        switch (posizione) {
+            case 1:
+                posizione = "🥇"
+                break;
+            case 2:
+                posizione = "🥈"
+                break;
+            case 3:
+                posizione = "🥉"
+                break;
+            default:
+                break;
+        }
+        string += `*${posizione} \\|* _${alias}_, ${array[i].punti}pt, id: ${array[i].idUnivocoGiocatore}\n`
     }
     if (string)
-        await ctx.reply(string)
+        await ctx.reply(string, {parse_mode: "MarkdownV2"})
     else 
     await ctx.reply("ERRORE: non ci sono utenti")
 })
 
 bot.command('list', async (ctx) =>{
     await ctx.reply(`ELENCO COMANDI:\n        
-/users    Mostra gli utenti
-/createUser    Crea utente senza alias (id progressivo)
-/createUser <alias>    Crea utente con alias (id progressivo)
-/addAlias <id> <alias>    Aggiunge alias a un utente con un certo id
-/partita <id> <id> / <id> <id> <id>    Aggiunge e toglie i punti
-/classifica    Mostra la classifica
-/override <id> <valorePunti>    Riscrive i punti di un giocatore
-/undo <id> <id> / <id> <id> <id>    Annulla una partita (solo partite effettuate)
-/clear    Cancella tutti gli utenti e partite
-`)
+*/users*  \\-  _Mostra gli utenti_
+*/createUser*  \\-  _Crea utente senza alias e id progressivo_
+*/createUser \\\<alias\\>*  \\-  _Crea utente con alias id progressivo_
+*/addAlias \\<id\\> \\<alias\\>*  \\-  _Aggiunge alias a un utente con un certo id_
+*/partita \\<id\\> \\<id\\> / \\<id\\> \\<id\\> \\<id\\>*  \\-  _Imposta i punti dopo una partita_
+*/classifica*  \\-  _Mostra la classifica_
+*/override \\<id\\> \\<valorePunti\\>*  \\-  _Sovrascrive punti_
+*/undo \\<id\\> \\<id\\> / \\<id\\> \\<id\\> \\<id\\>*  \\-  _Annulla una partita_
+*/clear*  \\-  _Cancella tutti gli utenti e partite_
+`, {parse_mode: "MarkdownV2"})
 })
 
 

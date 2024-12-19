@@ -1,22 +1,87 @@
 {
-    "nome": "IlCapitano",
-    "autori": [
-      "Andrea Norcia",
-      "Andrea Melchionna",
-      "Imraj Singh"
-    ],
-    "gruppi": [
-      {
-        "idUnivocoGruppo": 543643501,
-        "nome": "NOME CAMBIATO",
-        "giocatori": [
-        ]
-      },
-      {
-        "idUnivocoGruppo": -4793395432,
-        "nome": "NOME DI PROVA",
-        "giocatori": [
-        ]
-      }
-    ]
-  }
+  "nome": "IlCapitano",
+  "autori": [
+    "Andrea Norcia",
+    "Andrea Melchionna",
+    "Imraj Singh"
+  ],
+  "gruppi": [
+    {
+      "idUnivocoGruppo": -4793395432,
+      "contatore": 5,
+      "nome": "NOME DI PROVA",
+      "giocatori": [
+        {
+          "idUnivocoGiocatore": 0,
+          "alias": [
+            "Norcia"
+          ],
+          "partiteGiocate": 2,
+          "punti": 1
+        },
+        {
+          "idUnivocoGiocatore": 1,
+          "alias": [
+            "Melchio"
+          ],
+          "partiteGiocate": 2,
+          "punti": 3
+        },
+        {
+          "idUnivocoGiocatore": 2,
+          "alias": [
+            "Singh"
+          ],
+          "partiteGiocate": 2,
+          "punti": 0
+        },
+        {
+          "idUnivocoGiocatore": 3,
+          "alias": [
+            "Gp"
+          ],
+          "partiteGiocate": 2,
+          "punti": -2
+        },
+        {
+          "idUnivocoGiocatore": 4,
+          "alias": [
+            "Loresam"
+          ],
+          "partiteGiocate": 2,
+          "punti": -2
+        }
+      ],
+      "elencoPartite": [
+        "0 1 / 2 3 4",
+        "1 2 / 3 4 0"
+      ]
+    },
+    {
+      "idUnivocoGruppo": 543643501,
+      "contatore": 3,
+      "nome": "norciaand_undefined",
+      "giocatori": [
+        {
+          "idUnivocoGiocatore": 0,
+          "alias": [],
+          "partiteGiocate": 0,
+          "punti": 0
+        },
+        {
+          "idUnivocoGiocatore": 1,
+          "alias": [],
+          "partiteGiocate": 0,
+          "punti": 0
+        },
+        {
+          "idUnivocoGiocatore": 2,
+          "alias": [],
+          "partiteGiocate": 0,
+          "punti": 0
+        }
+      ],
+      "elencoPartite": []
+    }
+  ]
+}
