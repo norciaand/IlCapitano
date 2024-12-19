@@ -1,5 +1,17 @@
-const utils = require("./utils")
+    const utils = require("./utils")
 const data = utils.loadData()
+
+function creaGruppo(id,nome) {
+    let gruppo = {
+        idUnivocoGruppo: id,
+        contatore: 1,
+        nome: nome,
+        giocatori: [],
+        elencoPartite: []
+    }
+    data.gruppi.push(gruppo)
+    utils.saveData(data)
+}
 
 function ottieniGiocatore(idGruppo, idGiocatore) {
     return idGruppo.giocatori.find(oggetto => oggetto.idUnivocoGiocatore == idGiocatore)
@@ -12,10 +24,10 @@ function aumentaPartiteOttieni(idGruppo, idGiocatore) {
 }
 
 function ottieniGruppo(id){
-    return data.gruppi.find(oggetto => oggetto.idUnivocoGruppo == id);
+    return data.gruppi.find(oggetto => oggetto.idUnivocoGruppo == id)
 }
 
-function createUser(alias,id) {
+function createUser(id,alias) {
     const esistenteGruppo = ottieniGruppo(id)
 
     let nuovoUtente = {
@@ -40,6 +52,7 @@ function createUser(alias,id) {
 }
 
 function users(id){
+
     const esistenteGruppo = ottieniGruppo(id)
 
     let string = ""
@@ -59,6 +72,8 @@ function users(id){
 }
 
 function partita(sx, dx, id){
+    
+
     const esistenteGruppo = ottieniGruppo(id)
 
     if (sx.length + dx.length != 5) {
@@ -112,6 +127,8 @@ function partita(sx, dx, id){
 }
 
 function classifica(id){
+
+
     const esistenteGruppo = ottieniGruppo(id)
     
     let string = ""
@@ -163,6 +180,7 @@ function override(idGruppo, idGiocatore, punti){
 }
 
 function clear(id){
+
     const esistenteGruppo = ottieniGruppo(id)
     esistenteGruppo.giocatori = []
     esistenteGruppo.contatore = 0
@@ -172,6 +190,7 @@ function clear(id){
 }
 
 function undo(sx,dx,id){
+
     const esistenteGruppo = ottieniGruppo(id)
 
     if (sx.length + dx.length != 5) {
@@ -234,7 +253,8 @@ function undo(sx,dx,id){
     }
 }
 
-function addAlias(idGruppo,idGiocatore, alias){
+function addAlias(idGruppo,idGiocatore,alias){
+
     const esistenteGruppo = ottieniGruppo(idGruppo)
 
     let g = ottieniGiocatore(esistenteGruppo,idGiocatore)
@@ -247,6 +267,7 @@ function addAlias(idGruppo,idGiocatore, alias){
     }
 }
 
+function 
 
 module.exports = {
     createUser,
@@ -257,5 +278,6 @@ module.exports = {
     clear,
     undo,
     addAlias,
-    ottieniGruppo
+    ottieniGruppo,
+    creaGruppo
 }

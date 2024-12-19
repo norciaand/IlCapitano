@@ -1,11 +1,31 @@
-const { createUser, partita, classifica, override, clear, undo, addAlias } = require("./endpoints")
+const { createUser, partita, classifica, override, clear, undo, addAlias, users } = require("./endpoints")
 
 require("./endpoints")
 const functions = [
     {
         definition: {
+            name: "addAlias",
+            description: `addAlias(idGruppo,idUnivocoGiocatore, aliasNuovo)aggiungi un alias ad un giocatore, dato un suo vecchio alias ricava l'id del giocatore e inserisci il nuovo alias`,
+            parameters: {
+                type: "object",
+                properties: {
+                    idGruppo: { type: "string" },
+                    idUnivoco: { type: "string"},
+                    alias: { type: "string"}
+                },
+                required: ["idGruppo","idUnivoco","alias"]
+            },
+        },
+        handler: (options) => {
+            const {idGruppo,idUnivoco,alias } = options
+            console.log("AID FORNITO: " + idUnivoco + " ALIAS NUOVO: " + alias);
+            return addAlias(idGruppo,idUnivoco,alias)
+        }
+    },
+    {
+        definition: {
             name: "createUser",
-            description: "crea un utente, se viene passato un nome aggiungilo negli alias, se non passo alias passsa una str '' null ",
+            description: "crea un nuovo utente da 0, se viene passato un nome aggiungilo negli alias, se non passo alias passsa una stringa '' null ",
             parameters: {
                 type: "object",
                 properties: {
@@ -17,7 +37,7 @@ const functions = [
         },
         handler: (options) => {
             const {alias, idGruppo } = options
-            return createUser(alias,idGruppo)
+            return createUser(idGruppo,alias)
         }
     },
     {
@@ -108,7 +128,7 @@ const functions = [
             },
         },
         handler: (options) => {
-            const {id } = options
+            const {id} = options
             return clear(id)
         }
     },
@@ -132,25 +152,6 @@ const functions = [
         handler: (options) => {
             const {sx,dx,id } = options
             return undo(sx,dx,id)
-        }
-    },
-    {
-        definition: {
-            name: "alias",
-            description: `aggiungi un alias in base all'utente fornito con l'id`,
-            parameters: {
-                type: "object",
-                properties: {
-                    idGruppo: { type: "string" },
-                    idGiocatore: { type: "string"},
-                    alias: { type: "string"}
-                },
-                required: ["idGruppo","idGiocatore","alias"]
-            },
-        },
-        handler: (options) => {
-            const {idGruppo,idGiocatore,alias } = options
-            return addAlias(idGruppo,idGiocatore,alias)
         }
     }
 ]
