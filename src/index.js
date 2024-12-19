@@ -5,7 +5,7 @@ const { completionWithFunctions } = require("./utils")
 const { functions } = require("./functions")
 const configs = require("./configs")
 const utils = require("./utils")
-const { ottieniGruppo, users, override, classifica, undo, partita, createUser, addAlias, clear, creaGruppo } = require("./endpoints")
+const { ottieniGruppo, users, override, classifica, undo, partita, createUser, addAlias, clear, creaGruppo, audioclassifica } = require("./endpoints")
 require("./endpoints")
 const fs = require('fs')
 
@@ -134,25 +134,7 @@ bot.command('immagineClassifica', async (ctx) => {
 })
 
 bot.command('audioClassifica', async (ctx) => {
-    const response = await openai.chat.completions.create({
-        model: "gpt-4o-audio-preview",
-        modalities: ["text", "audio"],
-        audio: { voice: "alloy", format: "wav" },
-        messages: [
-          {
-            role: "user",
-            content: "riproduci la classifica in modo epico" + classifica(ctx.chat.id)
-          }
-        ]
-    });
-
-    let audioBase64 = response.choices[0].message.audio.data;
-    let audioBuffer = Buffer.from(audioBase64, 'base64');
-    const filePath = "./audio.wav";
-    fs.writeFileSync(filePath, audioBuffer);
-    await ctx.replyWithVoice({ source: filePath });
-    fs.unlinkSync(filePath);
-
+    audioclassifica(ctx)
 })
 
 bot.command('list', async (ctx) =>{
